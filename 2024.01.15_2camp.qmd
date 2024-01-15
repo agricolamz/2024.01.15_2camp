@@ -71,11 +71,63 @@ knitr::include_graphics("images/ak.jpeg", dpi = 200)
 - Разработка методов эмоциональной разметки текстов разной жанровой природы
 - Исследование категории естественности устной и письменной речи в контексте задачи автоматической генерации текста
 
-# Задачи первого этапа проекта
+# Задачи и результаты первого этапа проекта
 
-## Построение ландшафта лингвистики: задачи
+## Построение ландшафта лингвистики
 
-- определение 
+- сбор, чистка и разметка англоязычных аннотаций из **лингвистических** журналов
+    - собрано более 80 000 аннотаций из 330 журналов
+- сбор, чистка и разметка англоязычных аннотаций из **нелингвистических** журналов
+    - собрано более 150 000 аннотаций из 32 журналов
+- настройка методов векторизации и уменьшения размерности
+
+## Построение ландшафта лингвистики: результаты
+
+```{r, out.width='100%'}
+database <- read_csv("/home/agricolamz/work/bureaucracy/linguistic_convergency/journals/umap/2023-11-29.csv")
+abstract_annotation <- read_csv("/home/agricolamz/work/bureaucracy/linguistic_convergency/journals/first_results/annotated.csv")
+
+database |> 
+  filter(field == "linguistics",
+         umap_v1 < 2.5,
+         umap_v2 < 5) ->
+  just_linguistics
+
+just_linguistics |> 
+  left_join(abstract_annotation) |> 
+  group_by(type) |> 
+  summarize(umap_v1_mean = mean(umap_v1),
+            umap_v2_mean = mean(umap_v2)) ->
+  labels
+
+just_linguistics |> 
+  left_join(abstract_annotation) |> 
+  filter(!is.na(type)) |> 
+  ggplot(aes(umap_v1, umap_v2, color = type))+
+  geom_point(size = 0.1, alpha = 0.2, color = "grey80",
+             data = just_linguistics) +  
+  geom_point(size = 0.2, alpha = 0.5) +
+  geom_label(aes(umap_v1_mean, umap_v2_mean, label = type), data = labels, color = "black", alpha = 0.5)+
+  theme_void()+
+  theme(legend.position = "none")
+```
+
+## Построение ландшафта лингвистики: результаты
+
+```{r, out.width='100%'}
+database |>
+  group_by(field) |> 
+  summarize(umap_v1_mean = mean(umap_v1),
+            umap_v2_mean = mean(umap_v2)) ->
+  labels
+
+database |>
+  ggplot(aes(umap_v1, umap_v2, color = field))+
+  geom_point(size = 0.1, alpha = 0.2) +
+  geom_label(aes(umap_v1_mean, umap_v2_mean, label = field), data = labels, color = "black", alpha = 0.5)+
+  theme_void()+
+  theme(legend.position = "none")
+```
 
 ## Культуронимическое исследование: задачи
 
