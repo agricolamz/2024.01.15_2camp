@@ -104,8 +104,6 @@ just_linguistics |>
   left_join(abstract_annotation) |> 
   filter(!is.na(type)) |> 
   ggplot(aes(umap_v1, umap_v2, color = type))+
-  geom_point(size = 0.1, alpha = 0.2, color = "grey80",
-             data = just_linguistics) +  
   geom_point(size = 0.2, alpha = 0.5) +
   geom_label(aes(umap_v1_mean, umap_v2_mean, label = type), data = labels, color = "black", alpha = 0.5)+
   theme_void()+
@@ -129,11 +127,11 @@ database |>
   theme(legend.position = "none")
 ```
 
-## Культуронимическое исследование: задачи
+## Культуронимическое исследование
 
-## Тематическое моделирование на корпусе текстов «Прожито»: задачи
+## Тематическое моделирование на корпусе текстов «Прожито»
 
-## Создание языковых моделей для решения задач computational literary studies: задачи
+## Создание языковых моделей для решения задач computational literary studies
 
 # Результаты первого этапа проекта
 
